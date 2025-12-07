@@ -7,6 +7,7 @@ namespace OnlineSinavPortal.Repositories
         Task<IEnumerable<Sinav>> GetAktifSinavlarAsync();
         Task<Sinav?> GetSinavWithSorularAsync(int id);
         Task<IEnumerable<Sinav>> GetSinavlarByAdminIdAsync(int adminId);
+        Task<IEnumerable<Sinav>> GetAllWithSorularAsync();
     }
 }
 

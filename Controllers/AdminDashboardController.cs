@@ -16,7 +16,8 @@ namespace OnlineSinavPortal.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var sinavlar = await _sinavRepository.GetAllAsync();
+            // Sorular'ı da yüklemek için Include kullanıyoruz
+            var sinavlar = await _sinavRepository.GetAllWithSorularAsync();
             ViewBag.ToplamSinav = sinavlar.Count();
             ViewBag.AktifSinav = sinavlar.Count(s => s.Aktif);
             ViewBag.ToplamSoru = sinavlar.Sum(s => s.Sorular?.Count ?? 0);

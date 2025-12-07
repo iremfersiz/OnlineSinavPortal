@@ -36,6 +36,14 @@ namespace OnlineSinavPortal.Repositories
                 .OrderByDescending(s => s.OlusturmaTarihi)
                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<Sinav>> GetAllWithSorularAsync()
+        {
+            return await _dbSet
+                .Include(s => s.Sorular)
+                .Include(s => s.Admin)
+                .ToListAsync();
+        }
     }
 }
 
