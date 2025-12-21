@@ -1,0 +1,110 @@
+@model OnlineSinavPortal.Models.Sinav
+@{
+    ViewData["Title"] = "Sınav";
+    Layout = "_Layout";
+    var baslangicZamani = ViewBag.BaslangicZamani ?? DateTime.Now;
+    var sureDakika = ViewBag.SureDakika ?? Model.Sure;
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-10 mx-auto">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0">@Model.Baslik</h3>
+                    <div>
+                        <span id="timer" class="badge bg-light text-dark fs-5">@sureDakika:00</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form id="sinavForm" asp-action="SinavSonucuGonder" method="post">
+                        <input type="hidden" name="sinavId" value="@Model.Id" />
+                        <input type="hidden" name="baslangicZamani" value="@baslangicZamani.ToString("yyyy-MM-dd HH:mm:ss")" />
+
+                        @if (Model.Sorular != null && Model.Sorular.Any())
+                        {
+                            var sorular = Model.Sorular.OrderBy(s => s.Sira).ToList();
+                            @for (int i = 0; i < sorular.Count; i++)
+                            {
+                                var soru = sorular[i];
+                                <div class="card mb-4">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Soru @(i + 1) - (@soru.Puan puan)</h5>
+                                        <p class="card-text">@soru.SoruMetni</p>
+                                        <hr>
+                                        @if (soru.Secenekler != null && soru.Secenekler.Any())
+                                        {
+                                            var secenekler = soru.Secenekler.OrderBy(s => s.Sira).ToList();
+                                            @foreach (var secenek in secenekler)
+                                            {
+                                                <div class="form-check mb-2">
+                                                    <input class="form-check-input" type="radio" 
+                                                           name="cevaplar[@soru.Id]" 
+                                                           id="secenek_@secenek.Id" 
+                                                           value="@secenek.Id" required>
+                                                    <label class="form-check-label" for="secenek_@secenek.Id">
+                                                        @secenek.SecenekMetni
+                                                    </label>
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            }
+
+                            <div class="mt-4">
+                                <button type="submit" class="btn btn-primary btn-lg w-100" id="submitBtn">Sınavı Bitir</button>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="alert alert-warning">
+                                Bu sınavda henüz soru bulunmamaktadır.
+                            </div>
+                        }
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        var sureDakika = @sureDakika;
+        var sureSaniye = sureDakika * 60;
+        var timerElement = document.getElementById('timer');
+        var submitBtn = document.getElementById('submitBtn');
+        var form = document.getElementById('sinavForm');
+
+        function updateTimer() {
+            var dakika = Math.floor(sureSaniye / 60);
+            var saniye = sureSaniye % 60;
+            timerElement.textContent = dakika + ':' + (saniye < 10 ? '0' : '') + saniye;
+
+            if (sureSaniye <= 0) {
+                clearInterval(timerInterval);
+                alert('Süreniz doldu! Sınav otomatik olarak gönderilecek.');
+                form.submit();
+                return;
+            }
+
+            sureSaniye--;
+        }
+
+        var timerInterval = setInterval(updateTimer, 1000);
+
+        form.addEventListener('submit', function(e) {
+            clearInterval(timerInterval);
+        });
+
+        window.addEventListener('beforeunload', function(e) {
+            if (timerInterval) {
+                var confirmationMessage = 'Sınavı terk etmek istediğinizden emin misiniz?';
+                e.returnValue = confirmationMessage;
+                return confirmationMessage;
+            }
+        });
+    </script>
+}
+

@@ -1,0 +1,80 @@
+@model IEnumerable<OnlineSinavPortal.Models.Sinav>
+@{
+    ViewData["Title"] = "Mevcut Sınavlar";
+    Layout = "~/Views/Shared/_OgrenciLayout.cshtml";
+}
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h2 style="color: #333; font-weight: 700;">Mevcut Sınavlar</h2>
+        <p class="text-muted">Aktif sınavları görüntüleyin ve sınava katılın</p>
+    </div>
+</div>
+
+@if (Model.Any())
+{
+    <div class="row">
+        @foreach (var sinav in Model)
+        {
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="sinav-card">
+                    <h5>@sinav.Baslik</h5>
+                    
+                    @if (!string.IsNullOrEmpty(sinav.Aciklama))
+                    {
+                        <p class="text-muted mb-3" style="font-size: 0.9rem; min-height: 40px;">
+                            @(sinav.Aciklama.Length > 80 ? sinav.Aciklama.Substring(0, 80) + "..." : sinav.Aciklama)
+                        </p>
+                    }
+                    
+                    <div class="sinav-info">
+                        <div class="sinav-info-item">
+                            <span class="sinav-info-label">⏱️ Süre</span>
+                            <span class="sinav-info-value">@sinav.Sure dakika</span>
+                        </div>
+                        <div class="sinav-info-item">
+                            <span class="sinav-info-label">📊 Toplam Puan</span>
+                            <span class="sinav-info-value">@sinav.ToplamPuan</span>
+                        </div>
+                        <div class="sinav-info-item">
+                            <span class="sinav-info-label">✅ Geçme Notu</span>
+                            <span class="sinav-info-value">@sinav.GecmeNotu</span>
+                        </div>
+                        <div class="sinav-info-item">
+                            <span class="sinav-info-label">❓ Soru Sayısı</span>
+                            <span class="sinav-info-value">@(sinav.Sorular?.Count ?? 0)</span>
+                        </div>
+                        @if (sinav.BaslangicTarihi.HasValue)
+                        {
+                            <div class="sinav-info-item">
+                                <span class="sinav-info-label">📅 Başlangıç</span>
+                                <span class="sinav-info-value" style="font-size: 0.85rem;">@sinav.BaslangicTarihi.Value.ToString("dd.MM.yyyy HH:mm")</span>
+                            </div>
+                        }
+                        @if (sinav.BitisTarihi.HasValue)
+                        {
+                            <div class="sinav-info-item">
+                                <span class="sinav-info-label">⏰ Bitiş</span>
+                                <span class="sinav-info-value" style="font-size: 0.85rem;">@sinav.BitisTarihi.Value.ToString("dd.MM.yyyy HH:mm")</span>
+                            </div>
+                        }
+                    </div>
+                    
+                    <div class="mt-4">
+                        <a asp-action="SinavDetay" asp-route-id="@sinav.Id" class="btn btn-success w-100" style="padding: 12px; font-weight: 600;">
+                            📝 Sınav Detayları
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="empty-state">
+        <div class="empty-state-icon">📚</div>
+        <h3>Henüz aktif sınav bulunmamaktadır</h3>
+        <p>Yeni sınavlar eklendiğinde burada görünecektir.</p>
+    </div>
+}

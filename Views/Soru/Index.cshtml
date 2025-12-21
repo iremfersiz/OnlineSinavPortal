@@ -1,0 +1,159 @@
+@model List<OnlineSinavPortal.ViewModels.SoruViewModel>
+@{
+    ViewData["Title"] = "Soru Yönetimi";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var sinavId = ViewBag.SinavId;
+    var sinavBaslik = ViewBag.SinavBaslik;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 style="color: #333; font-weight: 700;">Soru Yönetimi</h2>
+        <p class="text-muted">@sinavBaslik</p>
+    </div>
+    <div>
+        <a asp-controller="Sinav" asp-action="Index" class="btn btn-secondary">Sınavlara Dön</a>
+        <a asp-action="Create" asp-route-sinavId="@sinavId" class="btn btn-primary">➕ Yeni Soru Ekle</a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Sorular</h5>
+    </div>
+    <div class="card-body">
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Sıra</th>
+                            <th>Soru Metni</th>
+                            <th>Puan</th>
+                            <th>Seçenek Sayısı</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var soru in Model)
+                        {
+                            <tr>
+                                <td>@soru.Sira</td>
+                                <td>@(soru.SoruMetni.Length > 100 ? soru.SoruMetni.Substring(0, 100) + "..." : soru.SoruMetni)</td>
+                                <td>@soru.Puan</td>
+                                <td>@soru.Secenekler.Count</td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-sm btn-info" onclick="getSoruDetails(@soru.Id)">Detay</button>
+                                        <button type="button" class="btn btn-sm btn-danger" onclick="deleteSoru(@soru.Id)">Sil</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <p class="text-muted">Bu sınav için henüz soru bulunmamaktadır.</p>
+            <a asp-action="Create" asp-route-sinavId="@sinavId" class="btn btn-primary">İlk Soruyu Oluştur</a>
+        }
+    </div>
+</div>
+
+<!-- Modal for Soru Details -->
+<div class="modal fade" id="soruDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Soru Detayları</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="soruDetailsContent">
+                <div class="text-center">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Yükleniyor...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function getSoruDetails(soruId) {
+            $.ajax({
+                url: '@Url.Action("GetSoruDetails", "Soru")',
+                type: 'GET',
+                data: { id: soruId },
+                success: function (response) {
+                    if (response.success) {
+                        var soru = response.soru;
+                        var html = '<div class="mb-3">';
+                        html += '<h6>Soru Metni:</h6>';
+                        html += '<p>' + soru.soruMetni + '</p>';
+                        html += '<p><strong>Puan:</strong> ' + soru.puan + '</p>';
+                        html += '<p><strong>Sıra:</strong> ' + soru.sira + '</p>';
+                        html += '</div>';
+                        html += '<div class="mb-3">';
+                        html += '<h6>Seçenekler:</h6>';
+                        html += '<ul class="list-group">';
+                        soru.secenekler.forEach(function(secenek) {
+                            var badge = secenek.dogruCevap ? '<span class="badge bg-success">Doğru</span>' : '';
+                            html += '<li class="list-group-item d-flex justify-content-between align-items-center">';
+                            html += secenek.secenekMetni + ' ' + badge;
+                            html += '</li>';
+                        });
+                        html += '</ul>';
+                        html += '</div>';
+                        $('#soruDetailsContent').html(html);
+                        $('#soruDetailsModal').modal('show');
+                    } else {
+                        alert('Soru detayları yüklenemedi: ' + response.message);
+                    }
+                },
+                error: function () {
+                    alert('Bir hata oluştu. Lütfen tekrar deneyin.');
+                }
+            });
+        }
+
+        function deleteSoru(soruId) {
+            if (!confirm('Bu soruyu silmek istediğinizden emin misiniz?')) {
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("Delete", "Soru")',
+                type: 'POST',
+                data: {
+                    id: soruId,
+                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                },
+                success: function (response) {
+                    if (response.success) {
+                        alert(response.message);
+                        location.reload();
+                    } else {
+                        alert('Hata: ' + response.message);
+                    }
+                },
+                error: function () {
+                    alert('Bir hata oluştu. Lütfen tekrar deneyin.');
+                }
+            });
+        }
+    </script>
+}
+
+
+
+
+
+

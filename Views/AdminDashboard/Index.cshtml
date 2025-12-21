@@ -1,0 +1,130 @@
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h2 style="color: #333; font-weight: 700;">Hoş Geldiniz</h2>
+        <p class="text-muted">Online Sınav Portalı Yönetim Paneli</p>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="stat-card primary">
+            <div class="stat-icon">📊</div>
+            <h3>@(ViewBag.ToplamSinav ?? 0)</h3>
+            <p>Toplam Sınav</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card success">
+            <div class="stat-icon">✅</div>
+            <h3>@(ViewBag.AktifSinav ?? 0)</h3>
+            <p>Aktif Sınavlar</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card info">
+            <div class="stat-icon">❓</div>
+            <h3>@(ViewBag.ToplamSoru ?? 0)</h3>
+            <p>Toplam Soru</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card warning">
+            <div class="stat-icon">👥</div>
+            <h3>0</h3>
+            <p>Toplam Kullanıcı</p>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Hızlı İşlemler</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <a asp-controller="Sinav" asp-action="Create" class="btn btn-primary w-100" style="padding: 15px; font-size: 1.1rem;">
+                            ➕ Yeni Sınav Oluştur
+                        </a>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <a asp-controller="Sinav" asp-action="Index" class="btn btn-success w-100" style="padding: 15px; font-size: 1.1rem;">
+                            📝 Sınavları Yönet
+                        </a>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <a href="#" class="btn btn-info w-100" style="padding: 15px; font-size: 1.1rem;">
+                            📊 Raporlar
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Son Sınavlar</h5>
+                <a asp-controller="Sinav" asp-action="Create" class="btn btn-primary btn-sm">Yeni Sınav Ekle</a>
+            </div>
+            <div class="card-body">
+                @if (ViewBag.SonSinavlar != null && ((List<OnlineSinavPortal.Models.Sinav>)ViewBag.SonSinavlar).Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Başlık</th>
+                                    <th>Süre (Dakika)</th>
+                                    <th>Toplam Puan</th>
+                                    <th>Soru Sayısı</th>
+                                    <th>Durum</th>
+                                    <th>İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var sinav in (List<OnlineSinavPortal.Models.Sinav>)ViewBag.SonSinavlar)
+                                {
+                                    <tr>
+                                        <td>@sinav.Baslik</td>
+                                        <td>@sinav.Sure</td>
+                                        <td>@sinav.ToplamPuan</td>
+                                        <td>@(sinav.Sorular?.Count ?? 0)</td>
+                                        <td>
+                                            @if (sinav.Aktif)
+                                            {
+                                                <span class="badge bg-success">Aktif</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary">Pasif</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <a asp-controller="Sinav" asp-action="Details" asp-route-id="@sinav.Id" class="btn btn-sm btn-info">Detay</a>
+                                            <a asp-controller="Soru" asp-action="Index" asp-route-sinavId="@sinav.Id" class="btn btn-sm btn-warning">Sorular</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted">Henüz sınav bulunmamaktadır. İlk sınavınızı oluşturmak için yukarıdaki butona tıklayın.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>

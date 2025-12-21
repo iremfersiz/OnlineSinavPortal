@@ -1,0 +1,76 @@
+@model IEnumerable<OnlineSinavPortal.Models.SinavSonucu>
+@{
+    ViewData["Title"] = "Sınav Sonuçlarım";
+    Layout = "~/Views/Shared/_OgrenciLayout.cshtml";
+}
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h2 style="color: #333; font-weight: 700;">Sınav Sonuçlarım</h2>
+        <p class="text-muted">Aldığınız tüm sınav sonuçlarını görüntüleyin</p>
+    </div>
+</div>
+
+@if (Model.Any())
+{
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Sonuç Listesi</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Sınav</th>
+                            <th>Alınan Puan</th>
+                            <th>Toplam Puan</th>
+                            <th>Doğru</th>
+                            <th>Yanlış</th>
+                            <th>Boş</th>
+                            <th>Sonuç</th>
+                            <th>Tarih</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var sonuc in Model)
+                        {
+                            <tr>
+                                <td><strong>@sonuc.Sinav?.Baslik</strong></td>
+                                <td><strong style="color: #11998e; font-size: 1.1rem;">@sonuc.AlinanPuan</strong></td>
+                                <td>@sonuc.ToplamPuan</td>
+                                <td class="text-success"><strong>@sonuc.DogruSayisi</strong></td>
+                                <td class="text-danger"><strong>@sonuc.YanlisSayisi</strong></td>
+                                <td class="text-secondary"><strong>@sonuc.BosSayisi</strong></td>
+                                <td>
+                                    @if (sonuc.GectiMi)
+                                    {
+                                        <span class="badge bg-success" style="padding: 8px 12px; font-size: 0.9rem;">✅ GEÇTİ</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger" style="padding: 8px 12px; font-size: 0.9rem;">❌ KALDI</span>
+                                    }
+                                </td>
+                                <td>@sonuc.OlusturmaTarihi.ToString("dd.MM.yyyy HH:mm")</td>
+                                <td>
+                                    <a asp-action="Sonuc" asp-route-sinavSonucId="@sonuc.Id" class="btn btn-sm btn-primary">📋 Detay</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="empty-state">
+        <div class="empty-state-icon">📊</div>
+        <h3>Henüz sınav sonucunuz bulunmamaktadır</h3>
+        <p>Katıldığınız sınavların sonuçları burada görünecektir.</p>
+        <a asp-action="Index" class="btn btn-success mt-3" style="padding: 12px 30px; font-weight: 600;">📝 Sınavlara Git</a>
+    </div>
+}

@@ -1,0 +1,141 @@
+@model OnlineSinavPortal.ViewModels.AdminLoginViewModel
+@{
+    ViewData["Title"] = "Giriş Yap";
+    Layout = "_Layout";
+}
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+    }
+    .hero-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: calc(100vh - 100px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+        margin: 0;
+        width: 100%;
+    }
+    .login-container {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+        padding: 40px;
+        max-width: 450px;
+        width: 100%;
+    }
+    .login-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    .login-header h1 {
+        color: #667eea;
+        font-weight: 700;
+        font-size: 2rem;
+        margin-bottom: 10px;
+    }
+    .login-header p {
+        color: #6c757d;
+        font-size: 1rem;
+    }
+    .form-label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 8px;
+    }
+    .form-control {
+        border-radius: 8px;
+        border: 2px solid #e9ecef;
+        padding: 12px 15px;
+        transition: all 0.3s;
+    }
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+    .btn-login {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s;
+        color: white;
+    }
+    .btn-login:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        color: white;
+    }
+</style>
+
+<div class="hero-section">
+    <div class="login-container">
+        <div class="login-header">
+            <h1>Online Sınav Portalı</h1>
+            <p>Giriş Yap</p>
+        </div>
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <form asp-action="Login" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="KullaniciAdi" class="form-label"></label>
+                <input asp-for="KullaniciAdi" class="form-control" placeholder="Kullanıcı adınızı giriniz" autocomplete="username" />
+                <span asp-validation-for="KullaniciAdi" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="OgrenciNumarasi" class="form-label"></label>
+                <input asp-for="OgrenciNumarasi" class="form-control" placeholder="Öğrenci numaranızı giriniz (Opsiyonel)" autocomplete="off" />
+                <span asp-validation-for="OgrenciNumarasi" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Sifre" class="form-label"></label>
+                <input asp-for="Sifre" class="form-control" placeholder="Şifrenizi giriniz" autocomplete="current-password" />
+                <span asp-validation-for="Sifre" class="text-danger"></span>
+            </div>
+
+            <div class="mb-4 form-check">
+                <input asp-for="BeniHatirla" class="form-check-input" />
+                <label asp-for="BeniHatirla" class="form-check-label">Beni Hatırla</label>
+            </div>
+
+            <div class="d-grid">
+                <button type="submit" class="btn btn-login">Giriş Yap</button>
+            </div>
+        </form>
+
+        <div class="text-center mt-4">
+            <p class="text-muted">Hesabınız yok mu? <a asp-action="Register" style="color: #667eea; text-decoration: none; font-weight: 600;">Kayıt Ol</a></p>
+            <small class="text-muted">© 2025 Online Sınav Portalı - Tüm hakları saklıdır</small>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}
+

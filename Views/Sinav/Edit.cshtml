@@ -1,0 +1,87 @@
+@model OnlineSinavPortal.ViewModels.SinavViewModel
+@{
+    ViewData["Title"] = "Sınav Düzenle";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header">
+                <h4>Sınav Düzenle</h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="Edit" method="post">
+                    <input type="hidden" asp-for="Id" />
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="Baslik" class="form-label"></label>
+                        <input asp-for="Baslik" class="form-control" />
+                        <span asp-validation-for="Baslik" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Aciklama" class="form-label"></label>
+                        <textarea asp-for="Aciklama" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="Aciklama" class="text-danger"></span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="Sure" class="form-label"></label>
+                            <input asp-for="Sure" class="form-control" type="number" />
+                            <span asp-validation-for="Sure" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="ToplamPuan" class="form-label"></label>
+                            <input asp-for="ToplamPuan" class="form-control" type="number" />
+                            <span asp-validation-for="ToplamPuan" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="GecmeNotu" class="form-label"></label>
+                            <input asp-for="GecmeNotu" class="form-control" type="number" />
+                            <span asp-validation-for="GecmeNotu" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="BaslangicTarihi" class="form-label"></label>
+                            <input asp-for="BaslangicTarihi" class="form-control" type="datetime-local" />
+                            <span asp-validation-for="BaslangicTarihi" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="BitisTarihi" class="form-label"></label>
+                            <input asp-for="BitisTarihi" class="form-control" type="datetime-local" />
+                            <span asp-validation-for="BitisTarihi" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <input asp-for="Aktif" class="form-check-input" />
+                        <label asp-for="Aktif" class="form-check-label"></label>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Index" class="btn btn-secondary">İptal</a>
+                        <button type="submit" class="btn btn-primary">Güncelle</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+
+
+
+
+

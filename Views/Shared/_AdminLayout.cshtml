@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Admin Panel</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 250px;
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0;
+            z-index: 1000;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+        .sidebar-header {
+            padding: 20px;
+            background: rgba(0,0,0,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .sidebar-header h4 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 1.3rem;
+        }
+        .sidebar .nav-link {
+            color: rgba(255,255,255,0.9);
+            padding: 15px 20px;
+            border-left: 3px solid transparent;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            color: white;
+            background-color: rgba(255,255,255,0.15);
+            border-left-color: white;
+        }
+        .sidebar .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .navbar-admin {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+        .navbar-admin .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #667eea;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px 10px 0 0 !important;
+            padding: 15px 20px;
+            font-weight: 600;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        .stat-card .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+        .stat-card.primary .stat-icon {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .stat-card.success .stat-icon {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+        .stat-card.info .stat-icon {
+            background: linear-gradient(135deg, #3494E6 0%, #EC6EAD 100%);
+            color: white;
+        }
+        .stat-card.warning .stat-icon {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+        .stat-card h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0;
+            color: #333;
+        }
+        .stat-card p {
+            color: #6c757d;
+            margin: 5px 0 0 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h4>Admin Panel</h4>
+        </div>
+        <nav class="nav flex-column mt-3">
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminDashboard" ? "active" : "")" asp-controller="AdminDashboard" asp-action="Index">
+                <i>📊</i> Dashboard
+            </a>
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Sinav" ? "active" : "")" asp-controller="Sinav" asp-action="Index">
+                <i>📝</i> Sınavlar
+            </a>
+            <div style="margin-top: auto; padding: 20px;">
+                <a class="nav-link" asp-controller="Account" asp-action="Logout">
+                    <i>🚪</i> Çıkış Yap
+                </a>
+            </div>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <nav class="navbar-admin">
+            <div class="container-fluid d-flex justify-content-between align-items-center">
+                <span class="navbar-brand mb-0">@ViewData["Title"]</span>
+                <div class="user-info">
+                    <div class="user-avatar">
+                        @(User.Identity?.Name?.Substring(0, 1).ToUpper() ?? "A")
+                    </div>
+                    <div>
+                        <div style="font-weight: 600; color: #333;">@User.Identity?.Name</div>
+                        <small style="color: #6c757d;">Yönetici</small>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        @RenderBody()
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@8.0.0/dist/browser/signalr.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    
+    <script>
+        // SignalR bağlantısı
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/sinavHub")
+            .build();
+
+        connection.start().then(function () {
+            console.log("SignalR bağlantısı kuruldu");
+            // Admin grubuna katıl
+            connection.invoke("JoinAdminGroup").catch(function (err) {
+                return console.error(err.toString());
+            });
+        }).catch(function (err) {
+            return console.error(err.toString());
+        });
+
+        // Yeni sınav bildirimi
+        connection.on("YeniSinavBildirimi", function (sinavBaslik, mesaj) {
+            showNotification(mesaj, "info");
+        });
+
+        // Sınav istatistik bildirimi
+        connection.on("SinavIstatistik", function (sinavId, katilimciSayisi, ortalamaPuan) {
+            showNotification(`Sınav #${sinavId}: ${katilimciSayisi} katılımcı, Ortalama: ${ortalamaPuan}`, "success");
+        });
+
+        function showNotification(message, type) {
+            var alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-' + (type === 'info' ? 'info' : 'success') + ' alert-dismissible fade show';
+            alertDiv.setAttribute('role', 'alert');
+            alertDiv.innerHTML = message + '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>';
+            
+            var mainContent = document.querySelector('.main-content');
+            if (mainContent) {
+                mainContent.insertBefore(alertDiv, mainContent.firstChild);
+                setTimeout(function() {
+                    alertDiv.remove();
+                }, 5000);
+            }
+        }
+    </script>
+    
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

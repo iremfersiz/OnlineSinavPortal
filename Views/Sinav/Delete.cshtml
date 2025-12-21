@@ -1,0 +1,54 @@
+@model OnlineSinavPortal.ViewModels.SinavViewModel
+@{
+    ViewData["Title"] = "Sınav Sil";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h4>Sınav Sil</h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning">
+                    <strong>Uyarı!</strong> Bu sınavı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.
+                </div>
+
+                <dl class="row">
+                    <dt class="col-sm-4">Başlık:</dt>
+                    <dd class="col-sm-8">@Model.Baslik</dd>
+
+                    <dt class="col-sm-4">Soru Sayısı:</dt>
+                    <dd class="col-sm-8">@Model.SoruSayisi</dd>
+
+                    <dt class="col-sm-4">Durum:</dt>
+                    <dd class="col-sm-8">
+                        @if (Model.Aktif)
+                        {
+                            <span class="badge bg-success">Aktif</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Pasif</span>
+                        }
+                    </dd>
+                </dl>
+
+                <form asp-action="Delete" method="post">
+                    <input type="hidden" asp-for="Id" />
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Index" class="btn btn-secondary">İptal</a>
+                        <button type="submit" class="btn btn-danger">Sil</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+

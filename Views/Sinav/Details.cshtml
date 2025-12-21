@@ -1,0 +1,71 @@
+@model OnlineSinavPortal.ViewModels.SinavViewModel
+@{
+    ViewData["Title"] = "Sınav Detayları";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4>Sınav Detayları</h4>
+                <div>
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning btn-sm">Düzenle</a>
+                    <a asp-controller="Soru" asp-action="Index" asp-route-sinavId="@Model.Id" class="btn btn-primary btn-sm">Soruları Yönet</a>
+                </div>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-3">Başlık:</dt>
+                    <dd class="col-sm-9">@Model.Baslik</dd>
+
+                    <dt class="col-sm-3">Açıklama:</dt>
+                    <dd class="col-sm-9">@(Model.Aciklama ?? "-")</dd>
+
+                    <dt class="col-sm-3">Süre:</dt>
+                    <dd class="col-sm-9">@Model.Sure dakika</dd>
+
+                    <dt class="col-sm-3">Toplam Puan:</dt>
+                    <dd class="col-sm-9">@Model.ToplamPuan</dd>
+
+                    <dt class="col-sm-3">Geçme Notu:</dt>
+                    <dd class="col-sm-9">@Model.GecmeNotu</dd>
+
+                    <dt class="col-sm-3">Soru Sayısı:</dt>
+                    <dd class="col-sm-9">@Model.SoruSayisi</dd>
+
+                    <dt class="col-sm-3">Durum:</dt>
+                    <dd class="col-sm-9">
+                        @if (Model.Aktif)
+                        {
+                            <span class="badge bg-success">Aktif</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Pasif</span>
+                        }
+                    </dd>
+
+                    <dt class="col-sm-3">Başlangıç Tarihi:</dt>
+                    <dd class="col-sm-9">@(Model.BaslangicTarihi?.ToString("dd.MM.yyyy HH:mm") ?? "-")</dd>
+
+                    <dt class="col-sm-3">Bitiş Tarihi:</dt>
+                    <dd class="col-sm-9">@(Model.BitisTarihi?.ToString("dd.MM.yyyy HH:mm") ?? "-")</dd>
+
+                    <dt class="col-sm-3">Oluşturma Tarihi:</dt>
+                    <dd class="col-sm-9">@Model.OlusturmaTarihi.ToString("dd.MM.yyyy HH:mm")</dd>
+                </dl>
+
+                <div class="mt-4">
+                    <a asp-action="Index" class="btn btn-secondary">Geri Dön</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+

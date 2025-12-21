@@ -1,0 +1,132 @@
+@model OnlineSinavPortal.Models.Sinav
+@{
+    ViewData["Title"] = "Sınav Detayları";
+    Layout = "~/Views/Shared/_OgrenciLayout.cshtml";
+}
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h2 style="color: #333; font-weight: 700;">Sınav Detayları</h2>
+        <p class="text-muted">Sınav bilgilerini inceleyin ve sınava başlayın</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-10 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="mb-0">@Model.Baslik</h3>
+            </div>
+            <div class="card-body">
+                @if (!string.IsNullOrEmpty(Model.Aciklama))
+                {
+                    <div class="alert alert-light border" style="background-color: #f8f9fa;">
+                        <p class="mb-0" style="font-size: 1.1rem; line-height: 1.6;">@Model.Aciklama</p>
+                    </div>
+                }
+
+                <div class="row mb-4">
+                    <div class="col-md-6 mb-3">
+                        <div class="p-3" style="background-color: #f8f9fa; border-radius: 8px;">
+                            <div class="d-flex align-items-center mb-2">
+                                <span style="font-size: 1.5rem; margin-right: 10px;">⏱️</span>
+                                <div>
+                                    <div style="color: #6c757d; font-size: 0.9rem;">Süre</div>
+                                    <div style="color: #333; font-weight: 600; font-size: 1.2rem;">@Model.Sure dakika</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="p-3" style="background-color: #f8f9fa; border-radius: 8px;">
+                            <div class="d-flex align-items-center mb-2">
+                                <span style="font-size: 1.5rem; margin-right: 10px;">📊</span>
+                                <div>
+                                    <div style="color: #6c757d; font-size: 0.9rem;">Toplam Puan</div>
+                                    <div style="color: #333; font-weight: 600; font-size: 1.2rem;">@Model.ToplamPuan</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="p-3" style="background-color: #f8f9fa; border-radius: 8px;">
+                            <div class="d-flex align-items-center mb-2">
+                                <span style="font-size: 1.5rem; margin-right: 10px;">✅</span>
+                                <div>
+                                    <div style="color: #6c757d; font-size: 0.9rem;">Geçme Notu</div>
+                                    <div style="color: #333; font-weight: 600; font-size: 1.2rem;">@Model.GecmeNotu</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="p-3" style="background-color: #f8f9fa; border-radius: 8px;">
+                            <div class="d-flex align-items-center mb-2">
+                                <span style="font-size: 1.5rem; margin-right: 10px;">❓</span>
+                                <div>
+                                    <div style="color: #6c757d; font-size: 0.9rem;">Soru Sayısı</div>
+                                    <div style="color: #333; font-weight: 600; font-size: 1.2rem;">@(Model.Sorular?.Count ?? 0)</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @if (Model.BaslangicTarihi.HasValue || Model.BitisTarihi.HasValue)
+                {
+                    <hr>
+                    <div class="row">
+                        @if (Model.BaslangicTarihi.HasValue)
+                        {
+                            <div class="col-md-6 mb-2">
+                                <strong>📅 Başlangıç Tarihi:</strong> 
+                                <span style="color: #11998e; font-weight: 600;">@Model.BaslangicTarihi.Value.ToString("dd.MM.yyyy HH:mm")</span>
+                            </div>
+                        }
+                        @if (Model.BitisTarihi.HasValue)
+                        {
+                            <div class="col-md-6 mb-2">
+                                <strong>⏰ Bitiş Tarihi:</strong> 
+                                <span style="color: #dc3545; font-weight: 600;">@Model.BitisTarihi.Value.ToString("dd.MM.yyyy HH:mm")</span>
+                            </div>
+                        }
+                    </div>
+                    <hr>
+                }
+
+                @if (ViewBag.OncekiSonuc != null)
+                {
+                    <div class="alert alert-warning border" style="background-color: #fff3cd;">
+                        <h5 style="color: #856404;">⚠️ Bu sınavı daha önce aldınız!</h5>
+                        <p style="color: #856404; margin-bottom: 15px;">
+                            <strong>Alınan Puan:</strong> 
+                            <span style="font-size: 1.3rem; font-weight: 700; color: #11998e;">
+                                @((ViewBag.OncekiSonuc as OnlineSinavPortal.Models.SinavSonucu).AlinanPuan) / @Model.ToplamPuan
+                            </span>
+                        </p>
+                        <a asp-action="Sonuc" asp-route-sinavSonucId="@((ViewBag.OncekiSonuc as OnlineSinavPortal.Models.SinavSonucu).Id)" 
+                           class="btn btn-warning" style="font-weight: 600;">
+                            📋 Sonucu Görüntüle
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <div class="mt-4">
+                        <a asp-action="SinavaGir" asp-route-id="@Model.Id" 
+                           class="btn btn-success btn-lg w-100" 
+                           style="padding: 15px; font-size: 1.2rem; font-weight: 600;">
+                            🚀 Sınava Başla
+                        </a>
+                    </div>
+                }
+
+                <div class="mt-3">
+                    <a asp-action="Index" class="btn btn-secondary">
+                        ← Geri Dön
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
